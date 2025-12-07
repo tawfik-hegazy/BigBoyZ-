@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BigBoyZ Factory - RC Specialists</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Custom Tailwind Configuration from index.html
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rrarlo: {
+                            50: '#fff7ed', 100: '#ffedd5', 200: '#fed7aa', 300: '#fdba74', 400: '#fb923c',
+                            500: '#f97316', // Primary Brand Color (Orange)
+                            600: '#ea580c', 700: '#c2410c', 800: '#9a3412', 900: '#7c2d12',
+                        },
+                        dark: {
+                            bg: '#0f172a', // Dark Blue Background
+                            card: '#1e293b', // Slightly Lighter Card Background
+                            text: '#f1f5f9'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles from index.html */
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f1f5f9; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f97316; }
+
+        /* Pro Global Styles - added to support the layout */
+        .btn {
+            display: inline-block; background: #ff3300; color: white; padding: 12px 25px;
+            text-decoration: none; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px;
+            transition: background 0.3s, transform 0.2s; border: none; cursor: pointer;
+        }
+        .btn:hover {
+            background: #cc2a00; transform: translateY(-2px);
+        }
+
+        /* NEW CUSTOM STYLE FOR PRODUCT IMAGE CONTAINERS
+           This ensures images within the catalog grid maintain a consistent size and fit correctly. */
+        .product-grid img {
+            height: 12rem; /* Adjusted from h-32 (8rem) to h-48 (12rem) for better visibility */
+            width: 100%;
+            object-fit: cover; /* Ensures the image covers the area without distortion */
+            border-radius: 4px;
+            margin-bottom: 0.75rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-dark-bg text-gray-100 font-sans selection:bg-rrarlo-500 selection:text-white">
+
+    <div id="root" class="min-h-screen">
+
+        <nav class="bg-dark-card shadow-lg sticky top-0 z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <a href="#" class="text-2xl font-extrabold text-rrarlo-500 tracking-wider">
+                        BigBoyZ Factory
+                    </a>
+                    <div class="flex space-x-4">
+                        <a href="#featured" class="text-gray-300 hover:text-rrarlo-500 transition-colors hidden sm:block">Home</a>
+                        <a href="#cars" class="text-gray-300 hover:text-rrarlo-500 transition-colors hidden sm:block">Cars</a>
+                        <a href="#accessories" class="text-gray-300 hover:text-rrarlo-500 transition-colors hidden sm:block">Accessories</a>
+                        <a href="#" class="text-gray-300 hover:text-rrarlo-500 transition-colors hidden sm:block">Account</a>
+                        <button class="relative p-1 text-gray-300 hover:text-rrarlo-500 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rrarlo-500 rounded-full">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="min-h-[calc(100vh-64px)]">
+
+            <section id="hero" class="bg-dark-card border-b border-gray-800">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+                    <div class="lg:flex lg:items-center lg:justify-between">
+                        <div class="lg:w-1/2">
+                            <h1 class="text-5xl lg:text-6xl font-extrabold text-white leading-tight">
+                                Unleash <span class="text-rrarlo-500">Extreme</span> Performance
+                            </h1>
+                            <p class="mt-6 text-xl text-gray-400">
+                                Precision-engineered RC vehicles for racing, bashing, and extreme crawling. Find your next machine.
+                            </p>
+                            <div class="mt-10 flex space-x-4">
+                                <a href="#cars" class="inline-flex items-center px-8 py-4 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-rrarlo-500 hover:bg-rrarlo-600 transition-colors text-lg">
+                                    Shop All Cars
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mt-12 lg:mt-0 lg:w-1/2 flex justify-center">
+                            <img src="https://udirc.com/cdn/shop/files/1610s-004.jpg?v=1764729551" alt="High-Performance RC Car" class="w-full max-w-lg rounded-xl shadow-2xl animation-float" style="filter: brightness(0.85);">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="featured" class="py-16 bg-dark-bg">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-extrabold text-white">Featured Machines</h2>
+                        <p class="mt-4 text-xl text-gray-400">Hand-picked for maximum performance.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        
+                        <div class="bg-dark-card p-6 rounded-xl shadow-xl hover:shadow-rrarlo-700/50 transition-shadow">
+                            <img src="./image copy 2.png" alt="Rrarlo X-Treme Buggy" class="rounded-lg mb-4 w-full h-48 object-cover">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-xl font-bold text-white">Rrarlo X-Treme Buggy</h3>
+                                <span class="text-rrarlo-500 text-2xl font-extrabold">$299.99</span>
+                            </div>
+                            <p class="mt-2 text-gray-400 text-sm">High-speed 1/10 scale buggy designed for competitive racing. Features a carbon fiber chassis and oil-filled shocks.</p>
+                            <div class="mt-4 flex justify-between items-center">
+                                <span class="text-sm font-medium text-gray-500">Scale: 1/10 | Speed: 60+ mph</span>
+                                <button class="px-4 py-2 bg-rrarlo-500 text-white text-sm font-medium rounded-md hover:bg-rrarlo-600 transition-colors">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-dark-card p-6 rounded-xl shadow-xl hover:shadow-rrarlo-700/50 transition-shadow">
+                            <img src="./image copy.png" alt="Crusher V2 Monster Truck" class="rounded-lg mb-4 w-full h-48 object-cover">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-xl font-bold text-white">Crusher V2 Monster Truck</h3>
+                                <span class="text-rrarlo-500 text-2xl font-extrabold">$449.99</span>
+                            </div>
+                            <p class="mt-2 text-gray-400 text-sm">Dominate any terrain with the Crusher V2. Massive tires, waterproof electronics, and unstoppable torque.</p>
+                            <div class="mt-4 flex justify-between items-center">
+                                <span class="text-sm font-medium text-gray-500">Scale: 1/8 | Speed: 45 mph</span>
+                                <button class="px-4 py-2 bg-rrarlo-500 text-white text-sm font-medium rounded-md hover:bg-rrarlo-600 transition-colors">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-dark-card p-6 rounded-xl shadow-xl hover:shadow-rrarlo-700/50 transition-shadow">
+                            <img src="./image.png" alt="Mini Basher" class="rounded-lg mb-4 w-full h-48 object-cover">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-xl font-bold text-white">Mini Basher</h3>
+                                <span class="text-rrarlo-500 text-2xl font-extrabold">$129.99</span>
+                            </div>
+                            <p class="mt-2 text-gray-400 text-sm">Perfect for beginners. Durable, fast enough to have fun, but easy to control.</p>
+                            <div class="mt-4 flex justify-between items-center">
+                                <span class="text-sm font-medium text-gray-500">Scale: 1/16 | Speed: 25 mph</span>
+                                <button class="px-4 py-2 bg-rrarlo-500 text-white text-sm font-medium rounded-md hover:bg-rrarlo-600 transition-colors">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center pb-8 pt-12">
+                        <a href="#cars" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-rrarlo-600 bg-white hover:bg-gray-50 transition-colors shadow-lg">
+                            View Full Car Catalog
+                        </a>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="cars" class="py-16 bg-gray-900">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-extrabold text-white text-center mb-12 border-b-2 border-rrarlo-500/50">RC Cars & Kits</h2>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 product-grid">
+                        
+                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
+                            <img src="./image copy 2.png" alt="Rrarlo X-Treme Buggy" class="rounded mb-3 w-full h-32 object-cover">
+                            <h4 class="text-lg font-semibold text-white">Rrarlo X-Treme Buggy</h4>
+                            <p class="text-gray-400 text-sm">High-speed 1/10 scale buggy designed for competitive racing.</p>
+                            <p class="text-rrarlo-400 font-bold mt-2">$299.99</p>
+                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        </div>
+                        
+                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
+                            <img src="./image copy.png" alt="Crusher V2 Monster Truck" class="rounded mb-3 w-full h-32 object-cover">
+                            <h4 class="text-lg font-semibold text-white">Crusher V2 Monster Truck</h4>
+                            <p class="text-gray-400 text-sm">Dominate any terrain with the Crusher V2. Unstoppable torque.</p>
+                            <p class="text-rrarlo-400 font-bold mt-2">$449.99</p>
+                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        </div>
+                        
+                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
+                            <img src="./JJJJ.jpg" alt="Drift King Pro" class="rounded mb-3 w-full h-32 object-cover">
+                            <h4 class="text-lg font-semibold text-white">Drift King Pro</h4>
+                            <p class="text-gray-400 text-sm">Precision engineered for the perfect slide. Gyro stabilization included.</p>
+                            <p class="text-rrarlo-400 font-bold mt-2">$349.99</p>
+                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        </div>
+                        
+                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
+                            <img src="./desertgreen_1.webp" alt="Rock Climber Z" class="rounded mb-3 w-full h-32 object-cover">
+                            <h4 class="text-lg font-semibold text-white">Rock Climber Z</h4>
+                            <p class="text-gray-400 text-sm">Scale realism meets extreme capability. Locking differentials.</p>
+                            <p class="text-rrarlo-400 font-bold mt-2">$399.99</p>
+                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        </div>
+                        
+                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
+                            <img src="./image.png" alt="Mini Basher" class="rounded mb-3 w-full h-32 object-cover">
+                            <h4 class="text-lg font-semibold text-white">Mini Basher</h4>
+                            <p class="text-gray-400 text-sm">Perfect for beginners. Durable, fast enough to have fun, but easy to control.</p>
+                            <p class="text-rrarlo-400 font-bold mt-2">$129.99</p>
+                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </section>
+            
+            <section id="accessories" class="py-16 bg-dark-bg">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-extrabold text-white text-center mb-12 border-b-2 border-rrarlo-500/50">Accessories & Power</h2>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 product-grid">
+                        
+                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
+                            <img src="./lipo.webp" alt="LiPo Battery 5000mAh 3S" class="rounded mb-3 w-full h-32 object-cover">
+                            <h4 class="text-lg font-semibold text-white">LiPo Battery 5000mAh 3S</h4>
+                            <p class="text-gray-400 text-sm">High discharge rate battery for maximum punch and runtime.</p>
+                            <p class="text-rrarlo-400 font-bold mt-2">$59.99</p>
+                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        </div>
+                        
+                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
+                            <img src="./image copy 3.png" alt="Pro Toolkit Set" class="rounded mb-3 w-full h-32 object-cover">
+                            <h4 class="text-lg font-semibold text-white">Pro Toolkit Set</h4>
+                            <p class="text-gray-400 text-sm">Everything you need to maintain and upgrade your RC vehicle.</p>
+                            <p class="text-rrarlo-400 font-bold mt-2">$39.99</p>
+                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        </div>
+                        
+                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
+                            <img src="./custom body.webp" alt="Custom Body Shells" class="rounded mb-3 w-full h-32 object-cover">
+                            <h4 class="text-lg font-semibold text-white">Custom Body Shells</h4>
+                            <p class="text-gray-400 text-sm">Lightweight and durable replacement shells. Assorted colors.</p>
+                            <p class="text-rrarlo-400 font-bold mt-2">$29.99</p>
+                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        </div>
+                        
+                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
+                            <img src="./shocks.webp" alt="Oil-Filled Shocks" class="rounded mb-3 w-full h-32 object-cover">
+                            <h4 class="text-lg font-semibold text-white">Heavy Duty Shocks (4-pack)  </h4>   <b>spare parts</b>
+                            <p class="text-gray-400 text-sm">Oil-filled aluminum shocks for superior damping and control.</p>
+                            <p class="text-rrarlo-400 font-bold mt-2">$49.99</p>
+                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </section>
+
+             <section class="bg-dark-card py-16">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center border border-rrarlo-500/50 p-8 rounded-xl">
+                    <h3 class="text-3xl font-bold text-white mb-4">Need Help Choosing?</h3>
+                    <p class="text-gray-400 mb-6">Chat with our **AI Advisor** for personalized recommendations based on your driving style and budget.</p>
+                    <button class="px-6 py-3 bg-rrarlo-500 text-white font-medium rounded-md hover:bg-rrarlo-600 transition-colors shadow-lg">
+                        Start Chatting
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="bg-gray-900 border-t border-gray-800 py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="md:flex md:items-center md:justify-between">
+                    <div class="flex justify-center md:justify-start space-x-6 md:order-2">
+                       <a href="#" class="text-gray-400 hover:text-gray-300">Instagram</a>
+                       <a href="#" class="text-gray-400 hover:text-gray-300">YouTube</a>
+                       <a href="#" class="text-gray-400 hover:text-gray-300">Twitter</a>
+                    </div>
+                    <div class="mt-8 md:mt-0 md:order-1">
+                        <p class="text-center text-base text-gray-400">
+                            &copy; 2025 BigBoyz Factory. All rights reserved. Built with BigBoyZ team.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
