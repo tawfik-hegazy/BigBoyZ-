@@ -1,305 +1,529 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BigBoyZ Factory - RC Specialists</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Custom Tailwind Configuration from index.html
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         rrarlo: {
                             50: '#fff7ed', 100: '#ffedd5', 200: '#fed7aa', 300: '#fdba74', 400: '#fb923c',
-                            500: '#f97316', // Primary Brand Color (Orange)
-                            600: '#ea580c', 700: '#c2410c', 800: '#9a3412', 900: '#7c2d12',
+                            500: '#f97316', 600: '#ea580c', 700: '#c2410c', 800: '#9a3412', 900: '#7c2d12',
                         },
                         dark: {
-                            bg: '#0f172a', // Dark Blue Background
-                            card: '#1e293b', // Slightly Lighter Card Background
-                            text: '#f1f5f9'
+                            bg: '#050b14', // Deep space blue/black
+                            card: '#0f172a',
+                            text: '#e2e8f0'
+                        },
+                        neon: {
+                            blue: '#00f3ff',
+                            purple: '#bc13fe'
                         }
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'], 
+                    },
+                    backgroundImage: {
+                        'grid-3d': "linear-gradient(to right, #1e293b 1px, transparent 1px), linear-gradient(to bottom, #1e293b 1px, transparent 1px)",
                     },
                     animation: {
-                        'float': 'float 6s ease-in-out infinite',
+                        'float-3d': 'float3D 8s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 3s infinite',
+                        'grid-move': 'gridMove 20s linear infinite',
                     },
                     keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
+                        float3D: {
+                            '0%, 100%': { transform: 'perspective(1000px) rotateY(-5deg) rotateX(5deg) translateY(0)' },
+                            '50%': { transform: 'perspective(1000px) rotateY(5deg) rotateX(-5deg) translateY(-20px)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 5px #f97316, 0 0 10px #f97316' },
+                            '50%': { boxShadow: '0 0 20px #f97316, 0 0 30px #f97316' }
+                        },
+                        gridMove: {
+                            '0%': { transform: 'translateY(0)' },
+                            '100%': { transform: 'translateY(40px)' }
                         }
                     }
                 },
             },
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Custom Styles from index.html */
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f1f5f9; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #050b14; 
+            color: #e2e8f0; 
+            overflow-x: hidden;
+            perspective: 2000px;
+        }
+        
+        /* 3D Moving Grid Background */
+        .bg-grid-wrapper {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            perspective: 500px; overflow: hidden; z-index: -1;
+        }
+        .bg-grid-plane {
+            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background-image: 
+                linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: rotateX(60deg);
+            animation: gridMove 20s linear infinite;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 40%, black 80%, transparent 100%);
+        }
+
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-track { background: #050b14; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #f97316; }
 
-        /* Pro Global Styles - added to support the layout */
-        .btn {
-            display: inline-block; background: #ff3300; color: white; padding: 12px 25px;
-            text-decoration: none; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px;
-            transition: background 0.3s, transform 0.2s; border: none; cursor: pointer;
+        /* 3D Button */
+        .btn-3d {
+            position: relative;
+            background: linear-gradient(to bottom, #f97316, #c2410c);
+            color: white; font-family: 'Orbitron', sans-serif; font-weight: 700;
+            padding: 12px 30px; border-radius: 6px;
+            border: none; outline: none;
+            transform-style: preserve-3d;
+            transition: transform 0.1s;
+            box-shadow: 0 10px 0 #7c2d12, 0 10px 20px rgba(0,0,0,0.4);
         }
-        .btn:hover {
-            background: #cc2a00; transform: translateY(-2px);
+        .btn-3d:active {
+            transform: translateY(5px);
+            box-shadow: 0 5px 0 #7c2d12, 0 5px 10px rgba(0,0,0,0.4);
+        }
+        .btn-3d:hover { filter: brightness(1.1); }
+
+        /* 3D Holographic Card */
+        .product-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .product-card::before {
+            content: ''; position: absolute; inset: 0;
+            border-radius: 1rem; padding: 2px;
+            background: linear-gradient(45deg, transparent, rgba(249, 115, 22, 0.5), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            opacity: 0.5; transition: opacity 0.5s;
+        }
+        .product-card:hover {
+            transform: translateZ(20px) rotateX(5deg) rotateY(-5deg);
+            box-shadow: 
+                -20px 20px 50px rgba(0,0,0,0.5),
+                0 0 20px rgba(249, 115, 22, 0.2);
+            border-color: rgba(249, 115, 22, 0.5);
+            z-index: 10;
+        }
+        
+        .product-grid img {
+            height: 14rem; width: 100%; object-fit: cover;
+            border-radius: 0.8rem;
+            transform: translateZ(0);
+            transition: transform 0.5s ease;
+        }
+        .product-card:hover img { 
+            transform: translateZ(30px) scale(1.05);
         }
 
-        /* NEW CUSTOM STYLE FOR PRODUCT IMAGE CONTAINERS
-           This ensures images within the catalog grid maintain a consistent size and fit correctly. */
-        .product-grid img {
-            height: 12rem; /* Adjusted from h-32 (8rem) to h-48 (12rem) for better visibility */
-            width: 100%;
-            object-fit: cover; /* Ensures the image covers the area without distortion */
-            border-radius: 4px;
-            margin-bottom: 0.75rem;
+        h1, h2, h3, h4 { font-family: 'Orbitron', sans-serif; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        
+        /* 3D SCROLL REVEAL ANIMATION */
+        .reveal { 
+            opacity: 0; 
+            transform: perspective(2000px) rotateX(45deg) translateY(100px) scale(0.8); 
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); 
+            transform-origin: center top;
+        }
+        .reveal.active { 
+            opacity: 1; 
+            transform: perspective(2000px) rotateX(0) translateY(0) scale(1); 
+        }
+        
+        .reveal-delay-100 { transition-delay: 0.1s; }
+        .reveal-delay-200 { transition-delay: 0.2s; }
+        .reveal-delay-300 { transition-delay: 0.3s; }
+
+        .float-badge {
+            animation: float3D 6s ease-in-out infinite reverse;
         }
     </style>
 </head>
-<body class="min-h-screen bg-dark-bg text-gray-100 font-sans selection:bg-rrarlo-500 selection:text-white">
+<body class="min-h-screen selection:bg-rrarlo-500 selection:text-white">
 
-    <div id="root" class="min-h-screen">
+    <div class="bg-grid-wrapper">
+        <div class="bg-grid-plane"></div>
+    </div>
 
-        <nav class="bg-dark-card shadow-lg sticky top-0 z-10">
+    <div id="root" class="min-h-screen relative z-10">
+
+        <nav class="fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-xl bg-black/60 border-b border-white/5">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-16">
-                    <a href="#" class="text-2xl font-extrabold text-rrarlo-500 tracking-wider">
-                        BigBoyZ Factory
+                <div class="flex justify-between items-center h-20">
+                    <a href="#" class="text-2xl font-black text-white tracking-widest hover:text-rrarlo-500 transition-colors flex items-center gap-2 transform hover:scale-105 duration-300">
+                        <span class="text-rrarlo-500 text-3xl drop-shadow-[0_0_10px_rgba(249,115,22,0.8)]">⚡</span> BIGBOYZ
                     </a>
-                    <div class="flex space-x-4">
-                        <a href="#featured" class="text-gray-300 hover:text-rrarlo-500 transition-colors hidden sm:block">Home</a>
-                        <a href="#cars" class="text-gray-300 hover:text-rrarlo-500 transition-colors hidden sm:block">Cars</a>
-                        <a href="#accessories" class="text-gray-300 hover:text-rrarlo-500 transition-colors hidden sm:block">Accessories</a>
-                        <a href="#" class="text-gray-300 hover:text-rrarlo-500 transition-colors hidden sm:block">Account</a>
-                        <button class="relative p-1 text-gray-300 hover:text-rrarlo-500 transition-colors">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                            <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-rrarlo-500 rounded-full">0</span>
+                    <div class="flex space-x-8 items-center">
+                        <a href="#featured" class="text-sm font-bold text-gray-300 hover:text-rrarlo-500 hover:shadow-[0_2px_0_#f97316] transition-all uppercase tracking-widest hidden sm:block pb-1">Home</a>
+                        <a href="#cars" class="text-sm font-bold text-gray-300 hover:text-rrarlo-500 hover:shadow-[0_2px_0_#f97316] transition-all uppercase tracking-widest hidden sm:block pb-1">Cars</a>
+                        <a href="#accessories" class="text-sm font-bold text-gray-300 hover:text-rrarlo-500 hover:shadow-[0_2px_0_#f97316] transition-all uppercase tracking-widest hidden sm:block pb-1">Parts</a>
+                        <button class="relative p-2 text-gray-300 hover:text-white transition-colors group">
+                            <div class="absolute inset-0 bg-rrarlo-500 rounded-full opacity-0 group-hover:opacity-20 transition-opacity blur-md animate-pulse"></div>
+                            <svg class="w-6 h-6 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <span class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-rrarlo-600 rounded-full shadow-[0_0_10px_#f97316]">2</span>
                         </button>
                     </div>
                 </div>
             </div>
         </nav>
 
-        <main class="min-h-[calc(100vh-64px)]">
+        <main class="min-h-[calc(100vh-80px)] pt-20">
 
-            <section id="hero" class="bg-dark-card border-b border-gray-800">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+            <!-- Hero Section with 3D Model Embed -->
+            <section id="hero" class="relative overflow-hidden min-h-[90vh] flex items-center perspective-1000">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-rrarlo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+                
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
                     <div class="lg:flex lg:items-center lg:justify-between">
-                        <div class="lg:w-1/2">
-                            <h1 class="text-5xl lg:text-6xl font-extrabold text-white leading-tight">
-                                Unleash <span class="text-rrarlo-500">Extreme</span> Performance
+                        <div class="lg:w-1/2 reveal active space-y-8" style="transform-style: preserve-3d;">
+                            <div class="float-badge inline-block px-4 py-1 rounded-sm border-l-4 border-rrarlo-500 bg-white/5 text-rrarlo-400 text-xs font-bold tracking-[0.3em] uppercase mb-4 backdrop-blur-md">
+                                Future of RC Racing
+                            </div>
+                            <h1 class="text-7xl lg:text-8xl font-black text-white leading-none tracking-tighter drop-shadow-2xl">
+                                UNLEASH <br>
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rrarlo-500 via-yellow-500 to-rrarlo-500 bg-[length:200%_auto] animate-[pulse_3s_ease-in-out_infinite]">EXTREME</span> <br>
+                                SPEED.
                             </h1>
-                            <p class="mt-6 text-xl text-gray-400">
-                                Precision-engineered RC vehicles for racing, bashing, and extreme crawling. Find your next machine.
+                            <p class="mt-4 text-xl text-gray-400 max-w-lg leading-relaxed font-light border-l border-white/10 pl-6">
+                                Precision-engineered RC vehicles designed for professional racing, hardcore bashing, and extreme technical crawling.
                             </p>
-                            <div class="mt-10 flex space-x-4">
-                                <a href="#cars" class="inline-flex items-center px-8 py-4 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-rrarlo-500 hover:bg-rrarlo-600 transition-colors text-lg">
-                                    Shop All Cars
+                            <div class="flex gap-6 pt-8" style="transform: translateZ(20px);">
+                                <a href="#cars" class="btn-3d">
+                                    Start Engine
+                                </a>
+                                <a href="#featured" class="px-6 py-3 border border-white/20 text-white font-bold uppercase tracking-wider rounded hover:bg-white/10 transition-all backdrop-blur-sm">
+                                    View Gallery
                                 </a>
                             </div>
                         </div>
-                        <div class="mt-12 lg:mt-0 lg:w-1/2 flex justify-center">
-                            <img src="https://udirc.com/cdn/shop/files/1610s-004.jpg?v=1764729551" alt="High-Performance RC Car" class="w-full max-w-lg rounded-xl shadow-2xl animation-float" style="filter: brightness(0.85);">
+                        
+                        <!-- SKETCHFAB EMBED SECTION -->
+                        <div class="mt-20 lg:mt-0 lg:w-1/2 flex flex-col justify-center relative reveal active reveal-delay-200 perspective-1000">
+                            <!-- Background Decor Rings -->
+                            <div class="absolute inset-0 border-[1px] border-rrarlo-500/20 rounded-full w-[600px] h-[600px] -z-10 m-auto animate-[spin_20s_linear_infinite] [transform:rotateX(70deg)]"></div>
+                            <div class="absolute inset-0 border-[1px] border-cyan-500/20 rounded-full w-[500px] h-[500px] -z-10 m-auto animate-[spin_15s_linear_infinite_reverse] [transform:rotateX(70deg)]"></div>
+                            
+                            <!-- Sketchfab Iframe -->
+                            <div class="w-full h-[500px] lg:h-[600px] drop-shadow-[0_30px_60px_rgba(0,0,0,0.8)] rounded-xl overflow-hidden border border-white/10 bg-black/40">
+                                <div class="sketchfab-embed-wrapper h-full w-full"> 
+                                    <iframe 
+                                        title="RC car" 
+                                        class="w-full h-full"
+                                        frameborder="0" 
+                                        allowfullscreen 
+                                        mozallowfullscreen="true" 
+                                        webkitallowfullscreen="true" 
+                                        allow="autoplay; fullscreen; xr-spatial-tracking" 
+                                        xr-spatial-tracking 
+                                        execution-while-out-of-viewport 
+                                        execution-while-not-rendered 
+                                        web-share 
+                                        src="https://sketchfab.com/models/66bf1f3f788643f1beee60163c0c89e2/embed?autostart=1&ui_theme=dark"> 
+                                    </iframe> 
+                                </div>
+                            </div>
+                            
+                            <!-- Credits (Styled Subtly) -->
+                            <div class="mt-2 text-xs text-center text-gray-500 font-mono">
+                                <a href="https://sketchfab.com/3d-models/rc-car-66bf1f3f788643f1beee60163c0c89e2" target="_blank" class="hover:text-rrarlo-500 transition-colors">RC car</a> by <a href="https://sketchfab.com/MolnarMihalyRobert" target="_blank" class="hover:text-rrarlo-500 transition-colors">MolnarMihalyRobert</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="featured" class="py-16 bg-dark-bg">
+            <!-- Featured Products Section -->
+            <section id="featured" class="py-32 relative">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="text-center mb-12">
-                        <h2 class="text-4xl font-extrabold text-white">Featured Machines</h2>
-                        <p class="mt-4 text-xl text-gray-400">Hand-picked for maximum performance.</p>
+                    <div class="flex justify-between items-end mb-16 reveal">
+                        <div class="border-l-8 border-rrarlo-600 pl-6">
+                            <h2 class="text-5xl font-black text-white mb-2 uppercase italic">Featured</h2>
+                            <p class="text-rrarlo-500 font-mono text-sm tracking-[0.2em] uppercase">/// High Performance Selection</p>
+                        </div>
+                        <a href="#cars" class="hidden sm:inline-block text-sm text-gray-400 hover:text-white transition-colors border-b border-rrarlo-500 pb-1">Full Catalog &rarr;</a>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        
-                        <div class="bg-dark-card p-6 rounded-xl shadow-xl hover:shadow-rrarlo-700/50 transition-shadow">
-                            <img src="./image copy 2.png" alt="Rrarlo X-Treme Buggy" class="rounded-lg mb-4 w-full h-48 object-cover">
-                            <div class="flex justify-between items-start">
-                                <h3 class="text-xl font-bold text-white">Rrarlo X-Treme Buggy</h3>
-                                <span class="text-rrarlo-500 text-2xl font-extrabold">$299.99</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 product-grid perspective-1000">
+                        <!-- Featured 1 -->
+                        <div class="product-card reveal">
+                            <div class="p-4 pb-0 relative z-10">
+                                <span class="absolute top-0 right-0 bg-rrarlo-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider shadow-lg">Best Seller</span>
+                                <img src="./image copy 2.png" alt="Rrarlo X-Treme Buggy" class="shadow-2xl">
                             </div>
-                            <p class="mt-2 text-gray-400 text-sm">High-speed 1/10 scale buggy designed for competitive racing. Features a carbon fiber chassis and oil-filled shocks.</p>
-                            <div class="mt-4 flex justify-between items-center">
-                                <span class="text-sm font-medium text-gray-500">Scale: 1/10 | Speed: 60+ mph</span>
-                                <button class="px-4 py-2 bg-rrarlo-500 text-white text-sm font-medium rounded-md hover:bg-rrarlo-600 transition-colors">
-                                    Add to Cart
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="bg-dark-card p-6 rounded-xl shadow-xl hover:shadow-rrarlo-700/50 transition-shadow">
-                            <img src="./image copy.png" alt="Crusher V2 Monster Truck" class="rounded-lg mb-4 w-full h-48 object-cover">
-                            <div class="flex justify-between items-start">
-                                <h3 class="text-xl font-bold text-white">Crusher V2 Monster Truck</h3>
-                                <span class="text-rrarlo-500 text-2xl font-extrabold">$449.99</span>
-                            </div>
-                            <p class="mt-2 text-gray-400 text-sm">Dominate any terrain with the Crusher V2. Massive tires, waterproof electronics, and unstoppable torque.</p>
-                            <div class="mt-4 flex justify-between items-center">
-                                <span class="text-sm font-medium text-gray-500">Scale: 1/8 | Speed: 45 mph</span>
-                                <button class="px-4 py-2 bg-rrarlo-500 text-white text-sm font-medium rounded-md hover:bg-rrarlo-600 transition-colors">
-                                    Add to Cart
-                                </button>
+                            <div class="p-6 relative z-20 bg-gradient-to-t from-black/80 to-transparent -mt-12 pt-14">
+                                <h3 class="text-2xl font-bold text-white mb-1 uppercase italic">Rrarlo X-Treme</h3>
+                                <p class="text-rrarlo-400 text-sm font-mono mb-4">Class: Competitive Buggy</p>
+                                <div class="flex justify-between items-center border-t border-white/10 pt-4">
+                                    <span class="text-2xl font-black text-white">$299<span class="text-sm align-top text-gray-400">.99</span></span>
+                                    <button class="bg-white text-black hover:bg-rrarlo-500 hover:text-white px-4 py-2 rounded font-bold uppercase text-xs tracking-wider transition-colors">Add to Cart</button>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="bg-dark-card p-6 rounded-xl shadow-xl hover:shadow-rrarlo-700/50 transition-shadow">
-                            <img src="./image.png" alt="Mini Basher" class="rounded-lg mb-4 w-full h-48 object-cover">
-                            <div class="flex justify-between items-start">
-                                <h3 class="text-xl font-bold text-white">Mini Basher</h3>
-                                <span class="text-rrarlo-500 text-2xl font-extrabold">$129.99</span>
+                        <!-- Featured 2 -->
+                        <div class="product-card reveal reveal-delay-100">
+                            <div class="p-4 pb-0 relative z-10">
+                                <span class="absolute top-0 right-0 bg-cyan-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider shadow-lg">New</span>
+                                <img src="./image copy.png" alt="Crusher V2 Monster Truck" class="shadow-2xl">
                             </div>
-                            <p class="mt-2 text-gray-400 text-sm">Perfect for beginners. Durable, fast enough to have fun, but easy to control.</p>
-                            <div class="mt-4 flex justify-between items-center">
-                                <span class="text-sm font-medium text-gray-500">Scale: 1/16 | Speed: 25 mph</span>
-                                <button class="px-4 py-2 bg-rrarlo-500 text-white text-sm font-medium rounded-md hover:bg-rrarlo-600 transition-colors">
-                                    Add to Cart
-                                </button>
+                            <div class="p-6 relative z-20 bg-gradient-to-t from-black/80 to-transparent -mt-12 pt-14">
+                                <h3 class="text-2xl font-bold text-white mb-1 uppercase italic">Crusher V2</h3>
+                                <p class="text-cyan-400 text-sm font-mono mb-4">Class: Monster Truck</p>
+                                <div class="flex justify-between items-center border-t border-white/10 pt-4">
+                                    <span class="text-2xl font-black text-white">$449<span class="text-sm align-top text-gray-400">.99</span></span>
+                                    <button class="bg-white text-black hover:bg-cyan-500 hover:text-white px-4 py-2 rounded font-bold uppercase text-xs tracking-wider transition-colors">Add to Cart</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="text-center pb-8 pt-12">
-                        <a href="#cars" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-rrarlo-600 bg-white hover:bg-gray-50 transition-colors shadow-lg">
-                            View Full Car Catalog
-                        </a>
+                        <!-- Featured 3 -->
+                        <div class="product-card reveal reveal-delay-200">
+                            <div class="p-4 pb-0 relative z-10">
+                                <img src="./image.png" alt="Mini Basher" class="shadow-2xl">
+                            </div>
+                            <div class="p-6 relative z-20 bg-gradient-to-t from-black/80 to-transparent -mt-12 pt-14">
+                                <h3 class="text-2xl font-bold text-white mb-1 uppercase italic">Mini Basher</h3>
+                                <p class="text-purple-400 text-sm font-mono mb-4">Class: Starter 1/16</p>
+                                <div class="flex justify-between items-center border-t border-white/10 pt-4">
+                                    <span class="text-2xl font-black text-white">$129<span class="text-sm align-top text-gray-400">.99</span></span>
+                                    <button class="bg-white text-black hover:bg-purple-500 hover:text-white px-4 py-2 rounded font-bold uppercase text-xs tracking-wider transition-colors">Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
             
-            <section id="cars" class="py-16 bg-gray-900">
+            <!-- Full Cars Catalog Section -->
+            <section id="cars" class="py-24 relative">
+                <div class="absolute inset-0 bg-rrarlo-900/5 skew-y-3 transform -z-10"></div>
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 class="text-4xl font-extrabold text-white text-center mb-12 border-b-2 border-rrarlo-500/50">RC Cars & Kits</h2>
-                    
+                    <h2 class="text-4xl font-black text-white text-center mb-16 reveal uppercase tracking-tighter">
+                        The <span class="text-rrarlo-500">Garage</span>
+                    </h2>
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 product-grid">
-                        
-                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
-                            <img src="./image copy 2.png" alt="Rrarlo X-Treme Buggy" class="rounded mb-3 w-full h-32 object-cover">
-                            <h4 class="text-lg font-semibold text-white">Rrarlo X-Treme Buggy</h4>
-                            <p class="text-gray-400 text-sm">High-speed 1/10 scale buggy designed for competitive racing.</p>
-                            <p class="text-rrarlo-400 font-bold mt-2">$299.99</p>
-                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        <div class="product-card reveal group">
+                            <img src="./image copy 2.png" alt="Rrarlo X-Treme">
+                            <div class="p-4 bg-black/40">
+                                <h4 class="text-sm font-bold text-white group-hover:text-rrarlo-500 transition-colors uppercase">Rrarlo X-Treme</h4>
+                                <div class="flex justify-between items-center mt-2">
+                                    <p class="text-white font-bold font-mono text-sm">$299.99</p>
+                                    <button class="text-xs border border-white/20 px-2 py-1 rounded text-gray-300 hover:bg-white hover:text-black transition-colors">BUY</button>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
-                            <img src="./image copy.png" alt="Crusher V2 Monster Truck" class="rounded mb-3 w-full h-32 object-cover">
-                            <h4 class="text-lg font-semibold text-white">Crusher V2 Monster Truck</h4>
-                            <p class="text-gray-400 text-sm">Dominate any terrain with the Crusher V2. Unstoppable torque.</p>
-                            <p class="text-rrarlo-400 font-bold mt-2">$449.99</p>
-                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        <div class="product-card reveal reveal-delay-100 group">
+                            <img src="./image copy.png" alt="Crusher V2">
+                            <div class="p-4 bg-black/40">
+                                <h4 class="text-sm font-bold text-white group-hover:text-rrarlo-500 transition-colors uppercase">Crusher V2</h4>
+                                <div class="flex justify-between items-center mt-2">
+                                    <p class="text-white font-bold font-mono text-sm">$449.99</p>
+                                    <button class="text-xs border border-white/20 px-2 py-1 rounded text-gray-300 hover:bg-white hover:text-black transition-colors">BUY</button>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
-                            <img src="./JJJJ.jpg" alt="Drift King Pro" class="rounded mb-3 w-full h-32 object-cover">
-                            <h4 class="text-lg font-semibold text-white">Drift King Pro</h4>
-                            <p class="text-gray-400 text-sm">Precision engineered for the perfect slide. Gyro stabilization included.</p>
-                            <p class="text-rrarlo-400 font-bold mt-2">$349.99</p>
-                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        <div class="product-card reveal reveal-delay-200 group">
+                            <img src="./JJJJ.jpg" alt="Drift King Pro">
+                            <div class="p-4 bg-black/40">
+                                <h4 class="text-sm font-bold text-white group-hover:text-rrarlo-500 transition-colors uppercase">Drift King Pro</h4>
+                                <div class="flex justify-between items-center mt-2">
+                                    <p class="text-white font-bold font-mono text-sm">$349.99</p>
+                                    <button class="text-xs border border-white/20 px-2 py-1 rounded text-gray-300 hover:bg-white hover:text-black transition-colors">BUY</button>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
-                            <img src="./desertgreen_1.webp" alt="Rock Climber Z" class="rounded mb-3 w-full h-32 object-cover">
-                            <h4 class="text-lg font-semibold text-white">Rock Climber Z</h4>
-                            <p class="text-gray-400 text-sm">Scale realism meets extreme capability. Locking differentials.</p>
-                            <p class="text-rrarlo-400 font-bold mt-2">$399.99</p>
-                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        <div class="product-card reveal reveal-delay-300 group">
+                            <img src="./desertgreen_1.webp" alt="Rock Climber Z">
+                            <div class="p-4 bg-black/40">
+                                <h4 class="text-sm font-bold text-white group-hover:text-rrarlo-500 transition-colors uppercase">Rock Climber Z</h4>
+                                <div class="flex justify-between items-center mt-2">
+                                    <p class="text-white font-bold font-mono text-sm">$399.99</p>
+                                    <button class="text-xs border border-white/20 px-2 py-1 rounded text-gray-300 hover:bg-white hover:text-black transition-colors">BUY</button>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
-                            <img src="./image.png" alt="Mini Basher" class="rounded mb-3 w-full h-32 object-cover">
-                            <h4 class="text-lg font-semibold text-white">Mini Basher</h4>
-                            <p class="text-gray-400 text-sm">Perfect for beginners. Durable, fast enough to have fun, but easy to control.</p>
-                            <p class="text-rrarlo-400 font-bold mt-2">$129.99</p>
-                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        <div class="product-card reveal group">
+                            <img src="./image.png" alt="Mini Basher">
+                            <div class="p-4 bg-black/40">
+                                <h4 class="text-sm font-bold text-white group-hover:text-rrarlo-500 transition-colors uppercase">Mini Basher</h4>
+                                <div class="flex justify-between items-center mt-2">
+                                    <p class="text-white font-bold font-mono text-sm">$129.99</p>
+                                    <button class="text-xs border border-white/20 px-2 py-1 rounded text-gray-300 hover:bg-white hover:text-black transition-colors">BUY</button>
+                                </div>
+                            </div>
                         </div>
-                        
                     </div>
                 </div>
             </section>
             
-            <section id="accessories" class="py-16 bg-dark-bg">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 class="text-4xl font-extrabold text-white text-center mb-12 border-b-2 border-rrarlo-500/50">Accessories & Power</h2>
-                    
+            <!-- Accessories & Batteries Section -->
+            <section id="accessories" class="py-24 relative">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <h2 class="text-4xl font-black text-white text-center mb-16 reveal uppercase tracking-tighter">
+                        Upgrades <span class="text-gray-600">&</span> Power
+                    </h2>
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 product-grid">
-                        
-                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
-                            <img src="./lipo.webp" alt="LiPo Battery 5000mAh 3S" class="rounded mb-3 w-full h-32 object-cover">
-                            <h4 class="text-lg font-semibold text-white">LiPo Battery 5000mAh 3S</h4>
-                            <p class="text-gray-400 text-sm">High discharge rate battery for maximum punch and runtime.</p>
-                            <p class="text-rrarlo-400 font-bold mt-2">$59.99</p>
-                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        <div class="product-card reveal group bg-dark-card/60">
+                            <img src="./lipo.webp" alt="LiPo Battery" class="opacity-80 group-hover:opacity-100">
+                            <div class="p-4">
+                                <h4 class="text-sm font-bold text-white font-mono">LiPo 5000mAh 3S</h4>
+                                <div class="flex justify-between items-center mt-2">
+                                    <p class="text-rrarlo-400 font-bold font-mono">$59.99</p>
+                                    <button class="text-gray-400 hover:text-white">+</button>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
-                            <img src="./image copy 3.png" alt="Pro Toolkit Set" class="rounded mb-3 w-full h-32 object-cover">
-                            <h4 class="text-lg font-semibold text-white">Pro Toolkit Set</h4>
-                            <p class="text-gray-400 text-sm">Everything you need to maintain and upgrade your RC vehicle.</p>
-                            <p class="text-rrarlo-400 font-bold mt-2">$39.99</p>
-                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        <div class="product-card reveal reveal-delay-100 group bg-dark-card/60">
+                            <img src="./image copy 3.png" alt="Toolkit">
+                            <div class="p-4">
+                                <h4 class="text-sm font-bold text-white font-mono">Pro Toolkit Set</h4>
+                                <div class="flex justify-between items-center mt-2">
+                                    <p class="text-rrarlo-400 font-bold font-mono">$39.99</p>
+                                    <button class="text-gray-400 hover:text-white">+</button>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
-                            <img src="./custom body.webp" alt="Custom Body Shells" class="rounded mb-3 w-full h-32 object-cover">
-                            <h4 class="text-lg font-semibold text-white">Custom Body Shells</h4>
-                            <p class="text-gray-400 text-sm">Lightweight and durable replacement shells. Assorted colors.</p>
-                            <p class="text-rrarlo-400 font-bold mt-2">$29.99</p>
-                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        <div class="product-card reveal reveal-delay-200 group bg-dark-card/60">
+                            <img src="./custom body.webp" alt="Shells">
+                            <div class="p-4">
+                                <h4 class="text-sm font-bold text-white font-mono">Custom Shells</h4>
+                                <div class="flex justify-between items-center mt-2">
+                                    <p class="text-rrarlo-400 font-bold font-mono">$29.99</p>
+                                    <button class="text-gray-400 hover:text-white">+</button>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="bg-dark-card p-4 rounded-lg shadow-md">
-                            <img src="./shocks.webp" alt="Oil-Filled Shocks" class="rounded mb-3 w-full h-32 object-cover">
-                            <h4 class="text-lg font-semibold text-white">Heavy Duty Shocks (4-pack)  </h4>   <b>spare parts</b>
-                            <p class="text-gray-400 text-sm">Oil-filled aluminum shocks for superior damping and control.</p>
-                            <p class="text-rrarlo-400 font-bold mt-2">$49.99</p>
-                            <button class="w-full mt-3 px-3 py-1.5 bg-rrarlo-500 text-white text-sm rounded hover:bg-rrarlo-600">Buy</button>
+                        <div class="product-card reveal reveal-delay-300 group bg-dark-card/60">
+                            <img src="./shocks.webp" alt="Shocks">
+                            <div class="p-4">
+                                <h4 class="text-sm font-bold text-white font-mono">Heavy Duty Shocks</h4>
+                                <div class="flex justify-between items-center mt-2">
+                                    <p class="text-rrarlo-400 font-bold font-mono">$49.99</p>
+                                    <button class="text-gray-400 hover:text-white">+</button>
+                                </div>
+                            </div>
                         </div>
-                        
                     </div>
                 </div>
             </section>
 
-             <section class="bg-dark-card py-16">
-                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center border border-rrarlo-500/50 p-8 rounded-xl">
-                    <h3 class="text-3xl font-bold text-white mb-4">Need Help Choosing?</h3>
-                    <p class="text-gray-400 mb-6">Chat with our **AI Advisor** for personalized recommendations based on your driving style and budget.</p>
-                    <button class="px-6 py-3 bg-rrarlo-500 text-white font-medium rounded-md hover:bg-rrarlo-600 transition-colors shadow-lg">
-                        Start Chatting
-                    </button>
+             <!-- AI Advisor CTA -->
+             <section class="py-32 relative overflow-hidden perspective-1000">
+                <div class="absolute inset-0 bg-gradient-to-t from-rrarlo-900/50 to-transparent z-0"></div>
+                <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center reveal" style="transform-style: preserve-3d;">
+                    <div class="bg-white/5 backdrop-blur-xl border border-white/10 p-12 rounded-3xl shadow-2xl relative overflow-hidden group hover:bg-white/10 transition-colors duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
+                        <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <svg class="w-40 h-40 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+                        </div>
+                        <h3 class="text-4xl lg:text-5xl font-black text-white mb-6 uppercase italic">Need Guidance?</h3>
+                        <p class="text-gray-300 mb-10 max-w-2xl mx-auto text-lg font-light">
+                            Our <span class="text-rrarlo-400 font-bold">AI Advisor</span> analyzes your driving style, terrain, and budget to recommend the perfect machine.
+                        </p>
+                        <button class="btn-3d text-lg px-10 py-4 uppercase tracking-widest">
+                            Start Analysis
+                        </button>
+                    </div>
                 </div>
             </section>
 
         </main>
 
-        <footer class="bg-gray-900 border-t border-gray-800 py-12">
+        <!-- Footer -->
+        <footer class="bg-black border-t border-gray-800 pt-20 pb-10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="md:flex md:items-center md:justify-between">
-                    <div class="flex justify-center md:justify-start space-x-6 md:order-2">
-                       <a href="#" class="text-gray-400 hover:text-gray-300">Instagram</a>
-                       <a href="#" class="text-gray-400 hover:text-gray-300">YouTube</a>
-                       <a href="#" class="text-gray-400 hover:text-gray-300">Twitter</a>
-                    </div>
-                    <div class="mt-8 md:mt-0 md:order-1">
-                        <p class="text-center text-base text-gray-400">
-                            &copy; 2025 BigBoyz Factory. All rights reserved. Built with BigBoyZ team.
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                    <div class="col-span-1 md:col-span-1">
+                        <span class="text-3xl font-black text-white tracking-widest flex items-center gap-2 mb-6">
+                            <span class="text-rrarlo-500">⚡</span> BIGBOYZ
+                        </span>
+                        <p class="text-gray-500 text-sm leading-relaxed">
+                            Engineering the future of remote control racing. High-torque brushless systems, aerospace-grade carbon fiber, and uncompromised durability.
                         </p>
                     </div>
+                    <div>
+                        <h4 class="text-white font-bold uppercase tracking-[0.2em] text-xs mb-8 border-b border-gray-800 pb-2 inline-block">Shop</h4>
+                        <ul class="space-y-4 text-sm text-gray-400 font-mono">
+                            <li><a href="#" class="hover:text-rrarlo-500 transition-colors">Ready-to-Run (RTR)</a></li>
+                            <li><a href="#" class="hover:text-rrarlo-500 transition-colors">Pro Kits & Chassis</a></li>
+                            <li><a href="#" class="hover:text-rrarlo-500 transition-colors">LiPo Batteries</a></li>
+                            <li><a href="#" class="hover:text-rrarlo-500 transition-colors">Brushless Motors</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold uppercase tracking-[0.2em] text-xs mb-8 border-b border-gray-800 pb-2 inline-block">Support</h4>
+                        <ul class="space-y-4 text-sm text-gray-400 font-mono">
+                            <li><a href="#" class="hover:text-rrarlo-500 transition-colors">Technical Manuals</a></li>
+                            <li><a href="#" class="hover:text-rrarlo-500 transition-colors">Warranty & Returns</a></li>
+                            <li><a href="#" class="hover:text-rrarlo-500 transition-colors">Shipping Policy</a></li>
+                            <li><a href="#" class="hover:text-rrarlo-500 transition-colors">Track Locator</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold uppercase tracking-[0.2em] text-xs mb-8 border-b border-gray-800 pb-2 inline-block">Connect</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="w-12 h-12 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:bg-rrarlo-600 hover:text-white hover:border-rrarlo-500 hover:-translate-y-1 transition-all">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                            </a>
+                            <a href="#" class="w-12 h-12 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:bg-rrarlo-600 hover:text-white hover:border-rrarlo-500 hover:-translate-y-1 transition-all">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-900 pt-8 flex justify-between items-center text-xs text-gray-600 font-mono">
+                    <p>&copy; 2025 BigBoyZ Factory. All rights reserved.</p>
+                    <p>Designed for Speed. Built for Glory.</p>
                 </div>
             </div>
         </footer>
     </div>
+
+    <!-- Scroll Animation Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Function to check for visible elements
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1 // Trigger when 10% of the element is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target); // Only animate once
+                    }
+                });
+            }, observerOptions);
+
+            // Select all elements with the 'reveal' class
+            const revealElements = document.querySelectorAll('.reveal');
+            revealElements.forEach(el => observer.observe(el));
+        });
+    </script>
 </body>
 </html>
